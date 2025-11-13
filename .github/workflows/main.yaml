@@ -3,7 +3,7 @@ name: Deploy to S3
 on:
   push:
     branches:
-      - main   # or 'master' — choose your main branch
+      - main   # Adjust if your default branch is different
 
 jobs:
   deploy:
@@ -23,3 +23,9 @@ jobs:
       - name: Sync files to S3
         run: |
           aws s3 sync . s3://portal-function-bucket --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id d3szmxaidctenr.cloudfront.net \
+            --paths "/*"
